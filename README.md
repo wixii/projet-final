@@ -107,7 +107,7 @@ WINPATH="$(pwd -W)"
 docker run --rm \
   -v "${WINPATH}\\data:/app/data" \
   -v "${WINPATH}\\outputs:/app/outputs" \
-  projet-final-evaluate:v1
+  project-final-evaluate:v1
 ```
 
 ---
@@ -118,7 +118,7 @@ docker run --rm \
 docker run --rm \
   -v "${WINPATH}\\data:/app/data" \
   -v "${WINPATH}\\outputs:/app/outputs" \
-  projet-final-evaluate:v1 --neighbors 15 --methods PCA UMAP
+  project-final-evaluate:v1 --neighbors 15 --methods PCA UMAP
 ```
 
 ---
@@ -134,7 +134,7 @@ docker run --rm \
   -v "${WINPATH}\\evaluate.py:/app/evaluate.py" \
   -v "${WINPATH}\\data:/app/data" \
   -v "${WINPATH}\\outputs:/app/outputs" \
-  projet-final-evaluate:v1
+  project-final-evaluate:v1
 ```
 
 Cela permet :
