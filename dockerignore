@@ -1,0 +1,14 @@
+# Tout les data (monté en volume)
+data/
+output/
+
+# Notebooks
+notebooks/
+
+# Git
+.git
+.gitignore
+
+# README
+README.md
+kaggle_readme.md
