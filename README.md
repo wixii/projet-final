@@ -147,4 +147,3 @@ Cela permet :
 
 ## Remarque sur les résultats
 Les méthodes non linéaires (t-SNE, UMAP) obtiennent généralement un score supérieur à PCA, ce qui est cohérent avec leur capacité à préserver les structures locales complexes.
-
