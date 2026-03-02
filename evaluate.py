@@ -12,7 +12,7 @@ from sklearn.neighbors import KNeighborsClassifier
 def load_original_data(data_path: Path) -> tuple[pd.DataFrame, np.ndarray]:
     df = pd.read_csv(data_path)
     # for alignment with outputs files
-    X = df.drop(columns=["city_name", "country"])
+    X = df.drop(columns=["city_name", "country"], errors="ignore")
     X_scaled = StandardScaler().fit_transform(X)
     return df, X_scaled
 
@@ -68,12 +68,26 @@ def main() -> None:
     )
     parser.add_argument("--data", default="data/city_lifestyle_dataset.csv", help="Path to original CSV dataset")
     parser.add_argument("--outputs", default="outputs", help="Directory containing *_emb_2d.csv files")
-    parser.add_argument("--neighbors", type=int, default=10, help="n_neighbors for trustworthiness AND kNN (default: 10)")
+    parser.add_argument(
+        "--neighbors",
+        type=int,
+        default=10,
+        help="n_neighbors for trustworthiness AND kNN (default: 10)",
+    )
     parser.add_argument(
         "--label",
         default="country",
         help="Label column for kNN accuracy (default: country). Set to '' to disable kNN.",
     )
+
+    # ✅ Bonus: allow user to choose which methods to evaluate
+    parser.add_argument(
+        "--methods",
+        nargs="+",
+        default=["PCA", "TSNE", "UMAP"],
+        help="Methods to evaluate (any of: PCA TSNE UMAP). Example: --methods PCA TSNE",
+    )
+
     args = parser.parse_args()
 
     data_path = Path(args.data)
@@ -87,13 +101,24 @@ def main() -> None:
     if do_knn:
         y = df_original[args.label].astype("category").cat.codes.to_numpy()
 
-    methods = {
+    all_methods = {
         "PCA": out_dir / "pca_emb_2d.csv",
         "TSNE": out_dir / "tsne_emb_2d.csv",
         "UMAP": out_dir / "umap_emb_2d.csv",
     }
 
+    # Filter methods based on user selection (case-insensitive)
+    wanted = {m.upper() for m in args.methods}
+    methods = {k: v for k, v in all_methods.items() if k.upper() in wanted}
+
+    if not methods:
+        raise ValueError(
+            f"No valid methods selected: {args.methods}. "
+            f"Choose among: {list(all_methods.keys())}"
+        )
+
     print(f"Dataset: {data_path} | n={len(df_original)}")
+    print(f"Selected methods: {', '.join(methods.keys())}")
     print(f"Trustworthiness with n_neighbors={args.neighbors}")
     if do_knn:
         n_classes = int(pd.Series(y).nunique())
