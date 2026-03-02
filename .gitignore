@@ -15,6 +15,9 @@ venv/
 # VSCode
 .vscode/
 
+#PyCharm
+.idea/
+
 # Logs
 *.log
 
